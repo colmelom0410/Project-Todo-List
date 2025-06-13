@@ -103,7 +103,6 @@
     background-color: #333652;
     color: #fad02c;
     font-weight: bold;
-    font-size: 1.5em;
     text-align: center;
   }
 
@@ -116,10 +115,54 @@
 
   .tasks{
     font-weight: bold;
-    padding: 20px 0;
     width: 100%;
     border-radius: 20px;
     text-align: center;
+    position: relative;
+    background-color: #737373;
+  }
+
+  .taskTitle{
+    width: 100%;
+    background-color: #737373;
+    border: none;
+    border-radius: 10px 10px 0 0;
+    color: white;
+  }
+
+  .taskContent{ 
+    background-color: white;
+    text-align: left;
+    padding: 5px 10px;
+    max-height: 30px;
+    overflow: hidden;
+    transition: max-height 0.3s;
+  }
+  .sample{
+    height: 100px;
+    margin: 5px 0;
+    background-color: rebeccapurple ;
+  }
+
+  .taskContent.expanded{
+    max-height: 1000px;
+    transition: max-height 2s;
+  }
+  
+  .taskFooter{
+    background-color: #737373 ;
+    border-radius: 0 0 10px 10px;
+  }
+  .taskFooter > button{
+    background-color: transparent;
+    border: none;
+  }
+
+  .taskFooter > button:hover{
+    color: #fad02c;
+  }
+  .taskFooter > button:active{
+    color: black;
   }
 
   .tasks.high{
