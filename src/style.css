@@ -142,6 +142,8 @@
     height: 100px;
     margin: 5px 0;
     background-color: rebeccapurple ;
+    font-size: 0.75em;
+    font-weight: lighter;
   }
 
   .taskContent.expanded{
