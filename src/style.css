@@ -51,6 +51,7 @@
     border: 1px solid red;
     height: 100%;
   }
+  /*  SIDEBAR */
   #sideBar{
     background-color: #90adc6;
     flex: 1;
@@ -63,22 +64,63 @@
   #sideBar h1{
     margin: 20px;
   }
-  #sideBar button{
+  #sideBar>nav button{
     background-color: #333652;
     color: #fad02c;
     font-weight: bold;
     border: none;
     height: 40px;
+    width: 150px;
     margin: 0 40px 10px;
     border-radius: 40px;
+    overflow-x: hidden;
   }
-  #sideBar button:hover{
-    font-size: 1.2em;
+  #sideBar>nav  button:hover{
+    
   }
-  #sideBar button:active{
-    font-size: 1em;
+  #sideBar>nav  button:active{
+    background-color: #333652be;
+    color: #fad02c;
   }
 
+  #addProjectBtn{
+    margin: 0;
+    height: 30px;
+    background-color: #333652;
+    color: #fad02c;
+    border: none;
+    border-radius: 0 5px 5px 0;
+  }
+
+  #addProjectBtn:active{
+    background-color: #333652be;
+  }
+
+  #addProjectInput{
+    background-color: #90adc6;
+    border: 1px ridge #333652;
+    border-radius: 5px 0 0 5px;
+    text-align: center;
+    width: 150px;
+    height: 30px;
+    margin: 10px 0;
+    outline: none;
+  }
+  #addProjectInput:focus{
+    border: 2px solid #333652;
+  }
+  .projectInput{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  nav{
+    border-top: 1.5px solid #333652;
+    padding: 10px 0;
+  }
+
+  /* MAIN */
   #content{
     background-color: #e9eaec;
     flex: 5;
@@ -113,6 +155,26 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+  }
+
+  .projectDiv{
+    position: relative;
+  }
+
+  #addTaskBtn{
+    background-color: transparent;
+    border: 2px solid #333652;
+    border-radius: 5px;
+    font-weight: bold;
+    color: #333652;
+    position: absolute;
+    top: 2px;
+    right: 0;
+  }
+
+  #addTaskBtn:active{
+    border: 2px solid black;
+    color: black;
   }
 
   .tasks{

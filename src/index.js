@@ -111,7 +111,10 @@ projectList.push(project2);
 
 console.log(projectList)
 
+// function that display all projects
 function defaultDisplay(){
+    removeContent();
+
     mainContent.classList.add('defaultSection');
     projectList.forEach(project => {
         const projectContent = new ProjectCard(project);
@@ -127,9 +130,8 @@ function defaultDisplay(){
 
 defaultDisplay();
 
-
-const sampleBtn = document.querySelector('#sampleBtn');
 const defaultBtn = document.querySelector('#defaultBtn');
+const sideBarProjectBtns = document.querySelectorAll('.projectBtns');
 
 function removeContent(){
     while (mainContent.hasChildNodes()){
@@ -138,16 +140,20 @@ function removeContent(){
 }
 
 defaultBtn.addEventListener('click', ()=>{
-    removeContent();
     mainContent.classList.remove('projectSection');
     defaultDisplay();
 });
 
-sampleBtn.addEventListener('click', ()=>{
+sideBarProjectBtns.forEach(btn =>{
+    btn.addEventListener('click', ()=>{
+})
+})
+
+function displayProjects(projectName, tasks){
     removeContent();
     mainContent.classList.remove('defaultSection');
     mainContent.classList.add('projectSection');
-    const sampleProject = new ProjectSection(project1.projectName, project1.tasks);
+    const sampleProject = new ProjectSection(projectName, tasks);
     const section = sampleProject.createSection();
     mainContent.appendChild(section);
     const tasksSection = document.querySelector('.tasksSection');
@@ -158,5 +164,35 @@ sampleBtn.addEventListener('click', ()=>{
         tasksSection.appendChild(displayTask);
     })
 
-    
+    return section;
+}
+
+
+const addProjectBtn = document.querySelector('#addProjectBtn');
+const addProjectInput = document.querySelector('#addProjectInput');
+const sideBarBtnContainer = document.querySelector('#sideBar>nav');
+
+
+addProjectBtn.addEventListener('click', (e) =>{
+    e.preventDefault();
+    const newProject = new Projects(addProjectInput.value);
+    newProject.addTask(task1);
+    newProject.addTask(task2);
+    if(newProject.projectName !== ''){
+        projectList.push(newProject);
+        const newProjectBtn = document.createElement('button');
+        newProjectBtn.classList.add('projectBtns');
+        newProjectBtn.textContent = newProject.projectName;
+        sideBarBtnContainer.appendChild(newProjectBtn);
+        // displayProjects(newProject.projectName, newProject.tasks)
+        const addTaskBtn = document.createElement('button');
+        addTaskBtn.textContent = 'Add Task';
+        addTaskBtn.id = "addTaskBtn";
+        displayProjects(newProject.projectName, newProject.tasks).appendChild(addTaskBtn);
+        newProjectBtn.addEventListener('click', ()=>{
+            displayProjects(newProject.projectName, newProject.tasks).appendChild(addTaskBtn);
+        })
+    }
+    addProjectInput.value = '';
+    console.log(projectList);
 })
