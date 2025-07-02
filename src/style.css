@@ -75,9 +75,7 @@
     border-radius: 40px;
     overflow-x: hidden;
   }
-  #sideBar>nav  button:hover{
-    
-  }
+
   #sideBar>nav  button:active{
     background-color: #333652be;
     color: #fad02c;
@@ -161,7 +159,7 @@
     position: relative;
   }
 
-  #addTaskBtn{
+  .addTaskBtn{
     background-color: transparent;
     border: 2px solid #333652;
     border-radius: 5px;

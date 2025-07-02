@@ -12,7 +12,7 @@
             <form class="projectInput">
                 <input type="text" name="addProjectInput" id="addProjectInput" 
                 placeholder="add project" class="projectInput">
-                <button type="submit" id="addProjectBtn">Add</button>
+                <button id="addProjectBtn">Add</button>
             </form>
             <nav>
                 <button id="defaultBtn">All</button>
@@ -21,11 +21,34 @@
         <div id="content">
             <h1>To do List</h1>
             <div id="mainContent">
-                
             </div>
             
         </div>
     </div>
-    
+    <dialog id="taskDialog">
+        <form class="taskInput">
+            <div>
+                <label for="taskTitle">Title:</label>
+                <input type="text" name="title" id="taskTitle" 
+                placeholder="title" class="taskInput" required>
+                <label for="taskDueDate">Due Date:</label>
+                <input type="date" name="taskDueDate" id="taskDueDate" required>
+                <label for="urgency">Urgency:</label>
+                <select name="urgency" id="urgency" required>
+                    <option value="" disabled selected>Select urgency</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
+                <label for="taskDesc">Description:</label>
+                <textarea name="taskDesc" id="taskDesc" rows="10" cols="30"></textarea>
+                <div id="inputBtns">
+                    <button id="addTodo">Add task</button>
+                    <button id="cancelTodo">Cancel</button>
+                </div>
+                
+            </div>
+        </form>
+    </dialog> 
 </body>
 </html>

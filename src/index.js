@@ -5,9 +5,9 @@ const mainContent = document.querySelector('#mainContent');
 const projectList = [];
 
 class Projects{
-    constructor(projectName){
+    constructor(projectName, tasks = []){
         this.projectName = projectName
-        this.tasks = [];
+        this.tasks = tasks;
     }
 
     addTask(task){
@@ -38,10 +38,11 @@ class ProjectCard{
 }
 
 class Task {
-    constructor(taskTitle, dueDate, taskDesc) {
+    constructor(taskTitle, dueDate, taskDesc, urgency) {
         this.taskTitle = taskTitle;
         this.dueDate = dueDate;
         this.taskDesc = taskDesc;
+        this.urgency = urgency;
     }
 }
 
@@ -62,7 +63,7 @@ class TaskCard {
         taskContent.classList.add('taskContent');
 
         const dueDate = document.createElement('h5');
-        dueDate.textContent = this.task.dueDate;
+        dueDate.textContent = `Due Date: ${this.task.dueDate}`;
 
         const taskDescription = document.createElement('div');
         taskDescription.classList.add('sample');
@@ -93,22 +94,6 @@ class TaskCard {
 }
 
 
-
-
-const project1 = new Projects("Project1");
-const task1 = new Task("title1","Due Date", "content1");
-const task2 = new Task("title1","Due Date", "content1");
-const project2 = new Projects("Project2");
-const task21 = new Task("title1","Due Date", "content1");
-const task22 = new Task("title1","Due Date", "content1");
-
-project1.addTask(task1);
-project1.addTask(task2);
-projectList.push(project1);
-project2.addTask(task21);
-project2.addTask(task22);
-projectList.push(project2);
-
 console.log(projectList)
 
 // function that display all projects
@@ -131,7 +116,7 @@ function defaultDisplay(){
 defaultDisplay();
 
 const defaultBtn = document.querySelector('#defaultBtn');
-const sideBarProjectBtns = document.querySelectorAll('.projectBtns');
+
 
 function removeContent(){
     while (mainContent.hasChildNodes()){
@@ -143,11 +128,6 @@ defaultBtn.addEventListener('click', ()=>{
     mainContent.classList.remove('projectSection');
     defaultDisplay();
 });
-
-sideBarProjectBtns.forEach(btn =>{
-    btn.addEventListener('click', ()=>{
-})
-})
 
 function displayProjects(projectName, tasks){
     removeContent();
@@ -172,27 +152,108 @@ const addProjectBtn = document.querySelector('#addProjectBtn');
 const addProjectInput = document.querySelector('#addProjectInput');
 const sideBarBtnContainer = document.querySelector('#sideBar>nav');
 
+const taskDialog = document.querySelector('#taskDialog');
+const addTodo = document.querySelector('#addTodo');
+const cancelTodo = document.querySelector('#cancelTodo');
+
+const taskTitle = document.querySelector('#taskTitle');
+const taskDueDate = document.querySelector('#taskDueDate');
+const taskUrgency = document.querySelector('#urgency');
+const taskDesc = document.querySelector('#taskDesc');
+
+let currentProject = null;
+
+addTodo.addEventListener('click', (e)=>{
+    e.preventDefault();
+    if(!taskTitle.value||!taskDueDate.value||!taskDesc.value){
+        alert("input values to all fields");
+        return;
+      }
+    if (!taskUrgency.value) {
+        alert("Please select urgency");
+        return;
+    }
+    if (currentProject) {
+        const NewTask = new Task(
+            taskTitle.value,
+            taskDueDate.value,
+            taskDesc.value,
+            taskUrgency.value
+        );
+        currentProject.addTask(NewTask);
+        displayProjects(currentProject.projectName, currentProject.tasks);
+    }
+
+    taskDialog.close();
+    clearTaskForm();
+
+    renderProjectWithAddButton(currentProject)
+
+})
+
+cancelTodo.addEventListener('click',(e)=>{
+    e.preventDefault();
+    clearTaskForm();
+    taskDialog.close();
+})
+
+function createNewProject(projectName){
+    const newProject = new Projects(projectName);
+    return newProject;
+}
+
+function createNewProjectBtn(newProject){
+    const newProjectBtn = document.createElement('button');
+    newProjectBtn.classList.add('projectBtns');
+    newProjectBtn.textContent = newProject.projectName;
+
+    return newProjectBtn;
+}
+
+
+function renderProjectWithAddButton(project) {
+    currentProject = project;
+    const container = displayProjects(project.projectName, project.tasks);
+
+    const addTaskBtn = document.createElement('button');
+    addTaskBtn.textContent = 'Add Task';
+    addTaskBtn.classList.add("addTaskBtn");
+
+    container.appendChild(addTaskBtn);
+    addTaskBtn.addEventListener('click', ()=>{
+        taskDialog.showModal();
+    })
+}
+
+
+function clearTaskForm() {
+    taskTitle.value = '';
+    taskDueDate.value = '';
+    taskUrgency.value = '';
+    taskDesc.value = '';
+}
+
 
 addProjectBtn.addEventListener('click', (e) =>{
     e.preventDefault();
-    const newProject = new Projects(addProjectInput.value);
-    newProject.addTask(task1);
-    newProject.addTask(task2);
-    if(newProject.projectName !== ''){
-        projectList.push(newProject);
-        const newProjectBtn = document.createElement('button');
-        newProjectBtn.classList.add('projectBtns');
-        newProjectBtn.textContent = newProject.projectName;
-        sideBarBtnContainer.appendChild(newProjectBtn);
-        // displayProjects(newProject.projectName, newProject.tasks)
-        const addTaskBtn = document.createElement('button');
-        addTaskBtn.textContent = 'Add Task';
-        addTaskBtn.id = "addTaskBtn";
-        displayProjects(newProject.projectName, newProject.tasks).appendChild(addTaskBtn);
-        newProjectBtn.addEventListener('click', ()=>{
-            displayProjects(newProject.projectName, newProject.tasks).appendChild(addTaskBtn);
-        })
+    const newProject = createNewProject(addProjectInput.value);
+    
+    if(newProject.projectName === ''){
+        return
     }
+    projectList.push(newProject);
+    const newProjectBtn = createNewProjectBtn(newProject);
+    sideBarBtnContainer.appendChild(newProjectBtn);
+    
+    newProjectBtn.addEventListener('click', ()=>{
+        currentProject = newProject;
+        renderProjectWithAddButton(newProject);
+    })
+
+    renderProjectWithAddButton(newProject);
+
     addProjectInput.value = '';
     console.log(projectList);
 })
+
+
