@@ -48,7 +48,7 @@
   }
   #container{
     display: flex;
-    border: 1px solid red;
+    /* border: 1px solid red; */
     height: 100%;
   }
   /*  SIDEBAR */
@@ -129,7 +129,7 @@
     margin: 20px;
   }
   #mainContent{
-    border: 1px solid purple;
+    /* border: 1px solid purple; */
   }
   .defaultSection {
     display: grid;
@@ -189,7 +189,7 @@
     background-color: #737373;
     border: none;
     border-radius: 10px 10px 0 0;
-    color: white;
+    color: #333652;
   }
 
   .taskContent{ 
@@ -200,12 +200,12 @@
     overflow: hidden;
     transition: max-height 0.3s;
   }
-  .sample{
-    height: 100px;
+  .textField{
+    height: auto;
     margin: 5px 0;
-    background-color: rebeccapurple ;
     font-size: 0.75em;
     font-weight: lighter;
+    white-space: pre-wrap;
   }
 
   .taskContent.expanded{
@@ -223,21 +223,21 @@
   }
 
   .taskFooter > button:hover{
-    color: #fad02c;
+    color: white;
   }
   .taskFooter > button:active{
     color: black;
   }
 
-  .tasks.high{
+  .taskTitle.high, .taskFooter.high{
     background-color: #c23e3e;
   }
-  .tasks.medium{
+  .taskTitle.medium, .taskFooter.medium{
     background-color: #ffbd59;
   }
-  .tasks.low{
+  .taskTitle.low, .taskFooter.low{
     background-color: #c1ff72;
   }
-  .tasks.missed{
+  .taskTitle.completed, .taskFooter.completed{
     background-color: #737373;
   }

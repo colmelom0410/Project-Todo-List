@@ -66,7 +66,7 @@ class TaskCard {
         dueDate.textContent = `Due Date: ${this.task.dueDate}`;
 
         const taskDescription = document.createElement('div');
-        taskDescription.classList.add('sample');
+        taskDescription.classList.add('textField');
         taskDescription.textContent = this.task.taskDesc;
 
         taskContent.appendChild(dueDate);
@@ -74,6 +74,8 @@ class TaskCard {
 
         const taskFooter = document.createElement('div');
         taskFooter.classList.add('taskFooter');
+
+        this.updateTaskColor(taskTitle, taskFooter);
 
         const toggleBtn = document.createElement('button');
         toggleBtn.textContent = '+';
@@ -91,6 +93,26 @@ class TaskCard {
 
         return task;
     }
+
+    updateTaskColor(taskTitle, taskFooter){
+        switch(this.task.urgency){
+            case "high":
+                taskTitle.classList.add("high");
+                taskFooter.classList.add("high");
+                break;
+            case "medium":
+                taskTitle.classList.add("medium");
+                taskFooter.classList.add("medium");
+                break;
+            case "low":
+                taskTitle.classList.add("low");
+                taskFooter.classList.add("low");
+                break;
+            default:
+                taskTitle.classList.add("completed");
+                taskFooter.classList.add("completed");
+        }
+    }
 }
 
 
@@ -99,7 +121,6 @@ console.log(projectList)
 // function that display all projects
 function defaultDisplay(){
     removeContent();
-
     mainContent.classList.add('defaultSection');
     projectList.forEach(project => {
         const projectContent = new ProjectCard(project);
@@ -141,6 +162,7 @@ function displayProjects(projectName, tasks){
     sampleProject.tasks.forEach(task =>{
         const taskContent = new TaskCard(task);
         const displayTask = taskContent.createTaskCard();
+
         tasksSection.appendChild(displayTask);
     })
 
@@ -232,7 +254,6 @@ function clearTaskForm() {
     taskUrgency.value = '';
     taskDesc.value = '';
 }
-
 
 addProjectBtn.addEventListener('click', (e) =>{
     e.preventDefault();
