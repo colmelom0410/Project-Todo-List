@@ -25,6 +25,8 @@ class ProjectCard{
         projects.classList.add("projects");
         const projectTitle = document.createElement('div');
         projectTitle.textContent = this.project.projectName;
+        projectTitle.appendChild(this.deleteProject(projects, this.project))
+
         const projectContent = document.createElement('div');
         projectTitle.classList.add("projectTitle");
         projectContent.classList.add("projectContents");
@@ -34,6 +36,26 @@ class ProjectCard{
         container.appendChild(projects);
 
         return projectContent;
+    }
+
+    deleteProject(projectDom, project){
+        const deleteProjectBtn = document.createElement('button');
+        deleteProjectBtn.classList.add('deleteProjectBtn');
+        const projectSidebarBtn = document.querySelector(`#sideBarBtn${project.projectName}`);
+        deleteProjectBtn.textContent = 'Delete';
+        deleteProjectBtn.classList.add('deleteProjectBtn');
+        deleteProjectBtn.addEventListener('click',()=>{
+            projectDom.remove();
+            sideBarBtnContainer.removeChild(projectSidebarBtn);
+            console.log(project);
+            const projectIndex = projectList.findIndex(proj => proj === project);
+            console.log(projectIndex);
+            if (projectIndex !== -1) {
+                projectList.splice(projectIndex, 1);
+              }
+            console.log(projectList);
+        })
+        return deleteProjectBtn;
     }
 }
 
@@ -70,7 +92,13 @@ class TaskCard {
         taskDescription.textContent = this.task.taskDesc;
 
         taskContent.appendChild(dueDate);
-        taskContent.appendChild(taskDescription);
+        taskContent.appendChild(taskDescription); 
+
+        const taskBtnsDiv = document.createElement('div');
+        taskBtnsDiv.classList.add('taskBtnsDiv');
+        taskBtnsDiv.appendChild(this.editTask(task, this.task));
+        taskBtnsDiv.appendChild(this.completeTask(task));
+        taskBtnsDiv.appendChild(this.deleteTask(task, this.task));
 
         const taskFooter = document.createElement('div');
         taskFooter.classList.add('taskFooter');
@@ -89,9 +117,48 @@ class TaskCard {
 
         task.appendChild(taskTitle);
         task.appendChild(taskContent);
+        taskContent.appendChild(taskBtnsDiv);
         task.appendChild(taskFooter);
 
         return task;
+    }
+
+    deleteTask(taskDom,TaskList){
+        const deleteTaskBtn = document.createElement('button');
+        deleteTaskBtn.textContent = 'Delete';
+        deleteTaskBtn.classList.add('deleteTaskBtn');
+        deleteTaskBtn.addEventListener('click',()=>{
+            taskDom.remove();
+            console.log(currentProject.tasks);
+            const taskIndex = currentProject.tasks.findIndex(todo => todo === TaskList);
+            console.log(taskIndex);
+            if (taskIndex !== -1) {
+                currentProject.tasks.splice(taskIndex, 1);
+              }
+        })
+        return deleteTaskBtn;
+    }
+
+    completeTask(task){
+        const completeTaskBtn = document.createElement('button');
+        completeTaskBtn.textContent = "Mark as Complete";
+        completeTaskBtn.classList.add('completeTaskBtn');
+        completeTaskBtn.addEventListener('click', ()=>{
+            console.log(`${task} Completed`)
+        })
+
+        return completeTaskBtn;
+    }
+
+    editTask(taskDom, taskList){
+        const editTaskBtn = document.createElement('button');
+        editTaskBtn.textContent = "Edit";
+        editTaskBtn.classList.add('editTaskBtn');
+        editTaskBtn.addEventListener('click', ()=>{
+            console.log(`Task Succesfully Edited`)
+        })
+        
+        return editTaskBtn;
     }
 
     updateTaskColor(taskTitle, taskFooter){
@@ -228,6 +295,7 @@ function createNewProjectBtn(newProject){
     const newProjectBtn = document.createElement('button');
     newProjectBtn.classList.add('projectBtns');
     newProjectBtn.textContent = newProject.projectName;
+    newProjectBtn.id = `sideBarBtn${newProject.projectName}`;
 
     return newProjectBtn;
 }
