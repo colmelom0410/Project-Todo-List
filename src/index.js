@@ -2,9 +2,34 @@ import "./style.css";
 import ProjectSection from "./projectSection";
 
 const mainContent = document.querySelector('#mainContent');
-const projectList = [];
 
-class Projects{
+class ProjectManager{
+    constructor(){
+        this.projects = [];
+        this.currentProject = null;
+    }
+
+    addProject(project){
+        this.projects.push(project);
+    }
+
+    removeProject(projectToRmv){
+        this.projects = this.projects.filter(project => project !== projectToRmv);
+    }
+    setCurrentProject(project){
+        this.currentProject = project;
+    }
+    getCurrentProject(){
+        return this.currentProject;
+    }
+    getAllProjects(){
+        return this.projects;
+    }
+}
+
+const projectManager = new ProjectManager();
+
+class Project{
     constructor(projectName, tasks = []){
         this.projectName = projectName
         this.tasks = tasks;
@@ -40,20 +65,18 @@ class ProjectCard{
 
     deleteProject(projectDom, project){
         const deleteProjectBtn = document.createElement('button');
-        deleteProjectBtn.classList.add('deleteProjectBtn');
-        const projectSidebarBtn = document.querySelector(`#sideBarBtn${project.projectName}`);
         deleteProjectBtn.textContent = 'Delete';
         deleteProjectBtn.classList.add('deleteProjectBtn');
         deleteProjectBtn.addEventListener('click',()=>{
             projectDom.remove();
-            sideBarBtnContainer.removeChild(projectSidebarBtn);
-            console.log(project);
-            const projectIndex = projectList.findIndex(proj => proj === project);
-            console.log(projectIndex);
+            const projectIndex = projectManager.getAllProjects().findIndex(proj => proj === project);
             if (projectIndex !== -1) {
-                projectList.splice(projectIndex, 1);
+                projectManager.getAllProjects().splice(projectIndex, 1);
+                const projectSidebarBtn = document.querySelectorAll(`.projectBtns`);
+                if (projectSidebarBtn[projectIndex]) {
+                    projectSidebarBtn[projectIndex].remove();
+                }
               }
-            console.log(projectList);
         })
         return deleteProjectBtn;
     }
@@ -69,8 +92,9 @@ class Task {
 }
 
 class TaskCard {
-    constructor(task) {
+    constructor(task, project) {
         this.task = task;
+        this.project = project;
     }
 
     createTaskCard() {
@@ -96,12 +120,13 @@ class TaskCard {
 
         const taskBtnsDiv = document.createElement('div');
         taskBtnsDiv.classList.add('taskBtnsDiv');
-        taskBtnsDiv.appendChild(this.editTask(task, this.task));
-        taskBtnsDiv.appendChild(this.completeTask(task));
-        taskBtnsDiv.appendChild(this.deleteTask(task, this.task));
-
+        
         const taskFooter = document.createElement('div');
         taskFooter.classList.add('taskFooter');
+
+        taskBtnsDiv.appendChild(this.editTask(task, this.task));
+        taskBtnsDiv.appendChild(this.completeTask(taskTitle, taskFooter, this.task));
+        taskBtnsDiv.appendChild(this.deleteTask(task, this.task));
 
         this.updateTaskColor(taskTitle, taskFooter);
 
@@ -123,28 +148,35 @@ class TaskCard {
         return task;
     }
 
-    deleteTask(taskDom,TaskList){
+    deleteTask(taskDom,taskList){
         const deleteTaskBtn = document.createElement('button');
         deleteTaskBtn.textContent = 'Delete';
         deleteTaskBtn.classList.add('deleteTaskBtn');
         deleteTaskBtn.addEventListener('click',()=>{
             taskDom.remove();
-            console.log(currentProject.tasks);
-            const taskIndex = currentProject.tasks.findIndex(todo => todo === TaskList);
+            console.log(this.project.tasks);
+            const taskIndex = this.project.tasks.findIndex(todo => todo === taskList);
             console.log(taskIndex);
             if (taskIndex !== -1) {
-                currentProject.tasks.splice(taskIndex, 1);
+                this.project.tasks.splice(taskIndex, 1);
               }
         })
         return deleteTaskBtn;
     }
 
-    completeTask(task){
+    completeTask(header, footer, taskList){    
         const completeTaskBtn = document.createElement('button');
         completeTaskBtn.textContent = "Mark as Complete";
         completeTaskBtn.classList.add('completeTaskBtn');
         completeTaskBtn.addEventListener('click', ()=>{
-            console.log(`${task} Completed`)
+            const taskIndex = this.project.tasks.findIndex(todo => todo === taskList);
+            console.log(taskIndex);
+            if (taskIndex !== -1) {
+                this.project.tasks.splice(taskIndex, 1);
+                this.project.tasks.push(taskList);
+              }
+            this.task.urgency = "completed";
+            this.updateTaskColor(header, footer);
         })
 
         return completeTaskBtn;
@@ -155,7 +187,7 @@ class TaskCard {
         editTaskBtn.textContent = "Edit";
         editTaskBtn.classList.add('editTaskBtn');
         editTaskBtn.addEventListener('click', ()=>{
-            console.log(`Task Succesfully Edited`)
+            taskDialog.showModal();
         })
         
         return editTaskBtn;
@@ -176,28 +208,33 @@ class TaskCard {
                 taskFooter.classList.add("low");
                 break;
             default:
-                taskTitle.classList.add("completed");
-                taskFooter.classList.add("completed");
+                taskTitle.classList.toggle("completed");
+                taskFooter.classList.toggle("completed");
+                break;
         }
     }
 }
 
 
-console.log(projectList)
+console.log(projectManager.getAllProjects())
+
+function renderDisplay(tasks, container, project){
+    tasks.forEach(task =>{
+        const taskContent = new TaskCard(task, project);
+        const displayTask = taskContent.createTaskCard();
+        container.appendChild(displayTask);
+
+    })
+}
 
 // function that display all projects
 function defaultDisplay(){
     removeContent();
     mainContent.classList.add('defaultSection');
-    projectList.forEach(project => {
+    projectManager.getAllProjects().forEach(project => {
         const projectContent = new ProjectCard(project);
         const displayProject = projectContent.createProjectCard(mainContent);
-        project.tasks.forEach(task =>{
-            const taskContent = new TaskCard(task);
-            const displayTask = taskContent.createTaskCard();
-            displayProject.appendChild(displayTask);
-    
-        })
+        renderDisplay(project.tasks, displayProject, project);
     });
 }
 
@@ -225,14 +262,9 @@ function displayProjects(projectName, tasks){
     const section = sampleProject.createSection();
     mainContent.appendChild(section);
     const tasksSection = document.querySelector('.tasksSection');
+
+    renderDisplay(sampleProject.tasks, tasksSection, sampleProject);
     
-    sampleProject.tasks.forEach(task =>{
-        const taskContent = new TaskCard(task);
-        const displayTask = taskContent.createTaskCard();
-
-        tasksSection.appendChild(displayTask);
-    })
-
     return section;
 }
 
@@ -250,10 +282,10 @@ const taskDueDate = document.querySelector('#taskDueDate');
 const taskUrgency = document.querySelector('#urgency');
 const taskDesc = document.querySelector('#taskDesc');
 
-let currentProject = null;
 
 addTodo.addEventListener('click', (e)=>{
     e.preventDefault();
+    const current = projectManager.getCurrentProject();
     if(!taskTitle.value||!taskDueDate.value||!taskDesc.value){
         alert("input values to all fields");
         return;
@@ -262,21 +294,21 @@ addTodo.addEventListener('click', (e)=>{
         alert("Please select urgency");
         return;
     }
-    if (currentProject) {
+    if (current) {
         const NewTask = new Task(
             taskTitle.value,
             taskDueDate.value,
             taskDesc.value,
             taskUrgency.value
         );
-        currentProject.addTask(NewTask);
-        displayProjects(currentProject.projectName, currentProject.tasks);
+        current.addTask(NewTask);
+        displayProjects(current.projectName, current.tasks);
     }
 
     taskDialog.close();
     clearTaskForm();
 
-    renderProjectWithAddButton(currentProject)
+    renderProjectWithAddButton(current)
 
 })
 
@@ -287,7 +319,7 @@ cancelTodo.addEventListener('click',(e)=>{
 })
 
 function createNewProject(projectName){
-    const newProject = new Projects(projectName);
+    const newProject = new Project(projectName);
     return newProject;
 }
 
@@ -295,14 +327,14 @@ function createNewProjectBtn(newProject){
     const newProjectBtn = document.createElement('button');
     newProjectBtn.classList.add('projectBtns');
     newProjectBtn.textContent = newProject.projectName;
-    newProjectBtn.id = `sideBarBtn${newProject.projectName}`;
+    // newProjectBtn.id = `sideBarBtn${newProject.projectName}`;
 
     return newProjectBtn;
 }
 
 
 function renderProjectWithAddButton(project) {
-    currentProject = project;
+    projectManager.setCurrentProject(project);
     const container = displayProjects(project.projectName, project.tasks);
 
     const addTaskBtn = document.createElement('button');
@@ -325,24 +357,26 @@ function clearTaskForm() {
 
 addProjectBtn.addEventListener('click', (e) =>{
     e.preventDefault();
-    const newProject = createNewProject(addProjectInput.value);
+    const projectName = addProjectInput.value.trim();
     
-    if(newProject.projectName === ''){
-        return
-    }
-    projectList.push(newProject);
+    if(!projectName) return;
+    
+    const newProject = createNewProject(projectName);
+    projectManager.addProject(newProject);
+    projectManager.setCurrentProject(newProject);
+
     const newProjectBtn = createNewProjectBtn(newProject);
     sideBarBtnContainer.appendChild(newProjectBtn);
     
     newProjectBtn.addEventListener('click', ()=>{
-        currentProject = newProject;
+        projectManager.setCurrentProject(newProject);
         renderProjectWithAddButton(newProject);
     })
 
     renderProjectWithAddButton(newProject);
 
     addProjectInput.value = '';
-    console.log(projectList);
+    console.log(projectManager.getAllProjects());
 })
 
 

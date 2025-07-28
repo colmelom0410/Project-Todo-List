@@ -292,4 +292,5 @@
   }
   .taskTitle.completed, .taskFooter.completed{
     background-color: #737373;
+    color: white;
   }
