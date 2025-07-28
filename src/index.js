@@ -164,21 +164,19 @@ class TaskCard {
         return deleteTaskBtn;
     }
 
-    completeTask(header, footer, taskList){    
+    completeTask(header, footer){    
         const completeTaskBtn = document.createElement('button');
         completeTaskBtn.textContent = "Mark as Complete";
         completeTaskBtn.classList.add('completeTaskBtn');
-        completeTaskBtn.addEventListener('click', ()=>{
-            const taskIndex = this.project.tasks.findIndex(todo => todo === taskList);
-            console.log(taskIndex);
-            if (taskIndex !== -1) {
-                this.project.tasks.splice(taskIndex, 1);
-                this.project.tasks.push(taskList);
-              }
+    
+        completeTaskBtn.addEventListener('click', () => {
+            if(this.task.urgency === "completed") return;
             this.task.urgency = "completed";
-            this.updateTaskColor(header, footer);
-        })
-
+            const current = projectManager.getCurrentProject();
+            renderProjectWithAddButton(current);
+            
+        });
+    
         return completeTaskBtn;
     }
 
@@ -208,8 +206,6 @@ class TaskCard {
                 taskFooter.classList.add("low");
                 break;
             default:
-                taskTitle.classList.toggle("completed");
-                taskFooter.classList.toggle("completed");
                 break;
         }
     }
@@ -220,6 +216,7 @@ console.log(projectManager.getAllProjects())
 
 function renderDisplay(tasks, container, project){
     tasks.forEach(task =>{
+        if(task.urgency == "completed") return;
         const taskContent = new TaskCard(task, project);
         const displayTask = taskContent.createTaskCard();
         container.appendChild(displayTask);
@@ -261,9 +258,18 @@ function displayProjects(projectName, tasks){
     const sampleProject = new ProjectSection(projectName, tasks);
     const section = sampleProject.createSection();
     mainContent.appendChild(section);
-    const tasksSection = document.querySelector('.tasksSection');
 
-    renderDisplay(sampleProject.tasks, tasksSection, sampleProject);
+    sampleProject.tasks.forEach(task => {
+        const taskContent = new TaskCard(task, sampleProject);
+        const taskDom = taskContent.createTaskCard();
+        if (task.urgency === 'completed') {
+            sampleProject.completedTasksSection.appendChild(taskDom);
+        } else {
+            sampleProject.tasksSection.appendChild(taskDom);
+        }
+    
+    })
+
     
     return section;
 }
