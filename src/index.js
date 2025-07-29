@@ -29,6 +29,48 @@ class ProjectManager{
 
 const projectManager = new ProjectManager();
 
+class TaskManager {
+    constructor() {
+        this.tasks = [];
+    }
+
+    addTask(task, project) {
+        project.addTask(task);
+        this.tasks.push({ task, project });
+    }
+
+    deleteTask(task, project) {
+        const index = project.tasks.findIndex(t => t === task);
+        if (index !== -1) {
+            project.tasks.splice(index, 1);
+        }
+
+        this.tasks = this.tasks.filter(t => t.task !== task);
+    }
+
+    editTask(oldTask, updatedTaskData) {
+        oldTask.taskTitle = updatedTaskData.taskTitle;
+        oldTask.dueDate = updatedTaskData.dueDate;
+        oldTask.taskDesc = updatedTaskData.taskDesc;
+        oldTask.urgency = updatedTaskData.urgency;
+    }
+
+    getAllTasks() {
+        return this.tasks;
+    }
+
+    getTasksByProject(project) {
+        return this.tasks.filter(entry => entry.project === project).map(entry => entry.task);
+    }
+
+    markComplete(task) {
+        task.urgency = "completed";
+    }
+}
+
+const taskManager = new TaskManager();
+
+
 class Project{
     constructor(projectName, tasks = []){
         this.projectName = projectName
@@ -124,8 +166,8 @@ class TaskCard {
         const taskFooter = document.createElement('div');
         taskFooter.classList.add('taskFooter');
 
-        taskBtnsDiv.appendChild(this.editTask(task, this.task));
-        taskBtnsDiv.appendChild(this.completeTask(taskTitle, taskFooter, this.task));
+        taskBtnsDiv.appendChild(this.editTask());
+        taskBtnsDiv.appendChild(this.completeTask());
         taskBtnsDiv.appendChild(this.deleteTask(task, this.task));
 
         this.updateTaskColor(taskTitle, taskFooter);
@@ -148,23 +190,18 @@ class TaskCard {
         return task;
     }
 
-    deleteTask(taskDom,taskList){
+    deleteTask(taskDom){
         const deleteTaskBtn = document.createElement('button');
         deleteTaskBtn.textContent = 'Delete';
         deleteTaskBtn.classList.add('deleteTaskBtn');
         deleteTaskBtn.addEventListener('click',()=>{
             taskDom.remove();
-            console.log(this.project.tasks);
-            const taskIndex = this.project.tasks.findIndex(todo => todo === taskList);
-            console.log(taskIndex);
-            if (taskIndex !== -1) {
-                this.project.tasks.splice(taskIndex, 1);
-              }
+            taskManager.deleteTask(this.task, this.project);
         })
         return deleteTaskBtn;
     }
 
-    completeTask(header, footer){    
+    completeTask(){    
         const completeTaskBtn = document.createElement('button');
         completeTaskBtn.textContent = "Mark as Complete";
         completeTaskBtn.classList.add('completeTaskBtn');
@@ -180,13 +217,41 @@ class TaskCard {
         return completeTaskBtn;
     }
 
-    editTask(taskDom, taskList){
+    editTask(){
         const editTaskBtn = document.createElement('button');
         editTaskBtn.textContent = "Edit";
         editTaskBtn.classList.add('editTaskBtn');
-        editTaskBtn.addEventListener('click', ()=>{
+        editTaskBtn.addEventListener('click', () => {
+            taskTitle.value = this.task.taskTitle;
+            taskDueDate.value = this.task.dueDate;
+            taskUrgency.value = this.task.urgency;
+            taskDesc.value = this.task.taskDesc;
+        
             taskDialog.showModal();
-        })
+        
+            // Temporarily override addTodo button behavior
+            const saveHandler = (e) => {
+                e.preventDefault();
+        
+                taskManager.editTask(this.task, {
+                    taskTitle: taskTitle.value,
+                    dueDate: taskDueDate.value,
+                    taskDesc: taskDesc.value,
+                    urgency: taskUrgency.value
+                });
+        
+                const current = projectManager.getCurrentProject();
+                taskDialog.close();
+                clearTaskForm();
+                taskManager.deleteTask(this.task, current);
+                renderProjectWithAddButton(current);
+                
+                addTodo.removeEventListener('click', saveHandler);
+
+            };
+            addTodo.addEventListener('click', saveHandler);
+
+        });
         
         return editTaskBtn;
     }
@@ -274,7 +339,6 @@ function displayProjects(projectName, tasks){
     return section;
 }
 
-
 const addProjectBtn = document.querySelector('#addProjectBtn');
 const addProjectInput = document.querySelector('#addProjectInput');
 const sideBarBtnContainer = document.querySelector('#sideBar>nav');
@@ -307,7 +371,7 @@ addTodo.addEventListener('click', (e)=>{
             taskDesc.value,
             taskUrgency.value
         );
-        current.addTask(NewTask);
+        taskManager.addTask(NewTask,current);
         displayProjects(current.projectName, current.tasks);
     }
 
@@ -384,5 +448,19 @@ addProjectBtn.addEventListener('click', (e) =>{
     addProjectInput.value = '';
     console.log(projectManager.getAllProjects());
 })
+
+function saveToLocalStoratge(){
+    const data = {
+        projects: projectManager.getAllProjects().map(project =>({
+            projectName: project.projectName,
+            tasks: project.tasks.map(task => ({
+                taskTitle: task.taskTitle,
+                dueDate: task.dueDate,
+                taskDesc: task.taskDesc,
+                urgency: task.urgency, 
+            }))
+        }))
+    }
+}
 
 
