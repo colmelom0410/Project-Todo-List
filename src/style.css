@@ -4,293 +4,351 @@
 */
 
 *, *::before, *::after {
-    box-sizing: border-box;
-  }
-  
-  * {
-    margin: 0;
-  }
-  
-  body {
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-  }
-  
-  img, picture, video, canvas, svg {
-    display: block;
-    max-width: 100%;
-  }
-  
-  input, button, textarea, select {
-    font: inherit;
-  }
-  
-  p, h1, h2, h3, h4, h5, h6 {
-    overflow-wrap: break-word;
-  }
-  
-  p {
-    text-wrap: pretty;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    text-wrap: balance;
-  }
-  
-  #root, #__next {
-    isolation: isolate;
-  }
+  box-sizing: border-box;
+}
 
-  /* -------------------------------- */
+* {
+  margin: 0;
+}
 
-  body{
-    background-color: white    ;
-    height: 100vh;
-  }
-  #container{
-    display: flex;
-    /* border: 1px solid red; */
-    height: 100%;
-  }
-  /*  SIDEBAR */
-  #sideBar{
-    background-color: #90adc6;
-    flex: 1;
-    text-align: center;
-  }
-  nav{
-    display: flex;
-    flex-direction: column;
-  }
-  #sideBar h1{
-    margin: 20px;
-  }
-  #sideBar>nav button{
-    background-color: #333652;
-    color: #fad02c;
-    font-weight: bold;
-    border: none;
-    height: 40px;
-    width: 150px;
-    margin: 0 40px 10px;
-    border-radius: 40px;
-    overflow-x: hidden;
-  }
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  background-color: white;
+  height: 100vh;
+}
 
-  #sideBar>nav  button:active{
-    background-color: #333652be;
-    color: #fad02c;
-  }
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
 
-  #addProjectBtn{
-    margin: 0;
-    height: 30px;
-    background-color: #333652;
-    color: #fad02c;
-    border: none;
-    border-radius: 0 5px 5px 0;
-  }
+input, button, textarea, select {
+  font: inherit;
+}
 
-  #addProjectBtn:active{
-    background-color: #333652be;
-  }
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
 
-  #addProjectInput{
-    background-color: #90adc6;
-    border: 1px ridge #333652;
-    border-radius: 5px 0 0 5px;
-    text-align: center;
-    width: 150px;
-    height: 30px;
-    margin: 10px 0;
-    outline: none;
-  }
-  #addProjectInput:focus{
-    border: 2px solid #333652;
-  }
-  .projectInput{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+p {
+  text-wrap: pretty;
+}
 
-  nav{
-    border-top: 1.5px solid #333652;
-    padding: 10px 0;
-  }
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
 
-  /* MAIN */
-  #content{
-    background-color: #e9eaec;
-    flex: 5;
-    overflow-y: auto;
-  }
-  #content h1{
-    text-align: center;
-    margin: 20px;
-  }
+#root, #__next {
+  isolation: isolate;
+}
 
-  .defaultSection {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 30px;
-    padding: 0 20px 20px;
-  }
-  .projects{
-    border: 2px solid #333652;
-  }
+/* ------------------ Fonts ------------------ */
 
-  .projectTitle{
-    background-color: #333652;
-    color: #fad02c;
-    font-weight: bold;
-    text-align: center;
-    position: relative;
-  }
+@font-face {
+  font-family: 'Lazydog';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Lazydog'), url('lazy_dog.ttf') format('truetype');
+}
 
-  .deleteProjectBtn{
-    position: absolute;
-    right: 5px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 0.5em;
-  }
+@font-face {
+  font-family: 'Gagalin';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Gagalin'), url('Gagalin-Regular.otf') format('opentype');
+}
 
-  .projectContents{
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+/* ------------------ Layout ------------------ */
 
-  .projectDiv{
-    position: relative;
-  }
+#container {
+  display: flex;
+  height: 100%;
+}
 
-  .addTaskBtn{
-    background-color: transparent;
-    border: 2px solid #333652;
-    border-radius: 5px;
-    font-weight: bold;
-    color: #333652;
-    position: absolute;
-    top: 2px;
-    right: 0;
-  }
+#sideBar {
+  background-color: #90adc6;
+  flex: 1;
+  text-align: center;
+}
 
-  .addTaskBtn:hover{
-    border: 2px solid black;
-    color: black;
-  }
+#content {
+  background-color: #e9eaec;
+  flex: 5;
+  overflow-y: auto;
+}
 
-  .addTaskBtn:active{
-    border: 2px solid #333652;
-    color: #333652;
-  }
+#content h1 {
+  text-align: center;
+  margin: 20px;
+}
 
-  .tasks{
-    font-weight: bold;
-    width: 100%;
-    border-radius: 20px;
-    text-align: center;
-    position: relative;
-    background-color: #737373;
-  }
+/* ------------------ Typography ------------------ */
 
-  .taskTitle{
-    width: 100%;
-    background-color: #737373;
-    border: none;
-    border-radius: 10px 10px 0 0;
-    color: #333652;
-  }
+h1 {
+  font-family: 'Gagalin';
+  color: #333652;
+}
 
-  .taskContent{ 
-    background-color: white;
-    text-align: left;
-    padding: 5px 10px;
-    max-height: 30px;
-    overflow: hidden;
-    transition: max-height 0.3s;
-  }
+/* ------------------ Sidebar Navigation ------------------ */
 
-  .taskBtnsDiv{
-    display: flex;
-    justify-content: center;
-    gap: 5px;
-    margin-top: 20px;
-  }
+#sideBar h1 {
+  margin: 20px;
+}
 
-  .taskBtnsDiv>button{
-    font-size: 0.75em;
-    border-radius: 5px;
-  }
+nav {
+  display: flex;
+  flex-direction: column;
+  border-top: 1.5px solid #333652;
+  padding: 10px 0;
+}
 
-  .taskBtnsDiv>button:hover, .deleteProjectBtn:hover{
-    opacity: 0.8;
-  }
+#sideBar > nav button {
+  background-color: #333652;
+  font-family: 'Lazydog';
+  color: #fad02c;
+  font-weight: bold;
+  border: none;
+  height: 40px;
+  width: 150px;
+  margin: 0 40px 10px;
+  border-radius: 40px;
+  overflow-x: hidden;
+}
 
-  .taskBtnsDiv>button:active, .deleteProjectBtn:active{
-    opacity: 1;
-  }
+#sideBar > nav button:active {
+  background-color: #333652be;
+}
 
-  .taskBtnsDiv>.deleteTaskBtn, .deleteProjectBtn{
-    background-color: #d64e3d;
-    border: 1px solid #c23e3e;
-    color: white;
-  }
+/* ------------------ Add Project ------------------ */
 
-  .taskBtnsDiv>.completeTaskBtn{
-    background-color: #439872;
-    border: 1px solid #3c916b;
-    color: white;
-  }
+.projectInput {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .taskBtnsDiv>.editTaskBtn{
-    background-color: #458ab3;
-    border: 1px solid #2e78a3;
-    color: white;
-  }
+#addProjectInput {
+  background-color: #90adc6;
+  border: 1px ridge #333652;
+  border-radius: 5px 0 0 5px;
+  text-align: center;
+  width: 150px;
+  height: 30px;
+  margin: 10px 0;
+  outline: none;
+}
 
-  .textField{
-    height: auto;
-    margin: 5px 0;
-    font-size: 1em;
-    font-weight: lighter;
-    white-space: pre-wrap;
-  }
+#addProjectInput:focus {
+  border: 2px solid #333652;
+}
 
-  .taskContent.expanded{
-    max-height: 1000px;
-    transition: max-height 2s;
-  }
-  
-  .taskFooter{
-    background-color: #737373 ;
-    border-radius: 0 0 10px 10px;
-  }
-  .taskFooter > button{
-    background-color: transparent;
-    border: none;
-  }
+#addProjectBtn {
+  height: 30px;
+  margin: 0;
+  background-color: #333652;
+  font-family: 'Lazydog';
+  color: #fad02c;
+  border: none;
+  border-radius: 0 5px 5px 0;
+}
 
-  .taskFooter > button:hover{
-    color: white;
-  }
-  .taskFooter > button:active{
-    color: black;
-  }
+#addProjectBtn:active {
+  background-color: #333652be;
+}
 
-  .taskTitle.high, .taskFooter.high{
-    background-color: #c23e3e;
-    color: white;
-  }
-  .taskTitle.medium, .taskFooter.medium{
-    background-color: #ffbd59;
-  }
-  .taskTitle.low, .taskFooter.low{
-    background-color: #c1ff72;
-  }
-  .taskTitle.completed, .taskFooter.completed{
-    background-color: #737373;
-    color: white;
-  }
+/* ------------------ Projects ------------------ */
+
+.defaultSection {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+  padding: 0 20px 20px;
+}
+
+.projects {
+  border: 2px solid #333652;
+}
+
+.projectDiv {
+  position: relative;
+}
+
+.projectTitle {
+  background-color: #333652;
+  font-family: 'Lazydog';
+  font-size: 1.5em;
+  color: #fad02c;
+  font-weight: bold;
+  text-align: center;
+  position: relative;
+}
+
+.deleteProjectBtn {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.5em;
+  background-color: #d64e3d;
+  border: 1px solid #c23e3e;
+  color: white;
+}
+
+.deleteProjectBtn:hover {
+  opacity: 0.8;
+}
+
+.deleteProjectBtn:active {
+  opacity: 1;
+}
+
+/* ------------------ Project Content ------------------ */
+
+.projectContents {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ------------------ Tasks ------------------ */
+
+.tasks {
+  font-weight: bold;
+  width: 100%;
+  border-radius: 20px;
+  text-align: center;
+  position: relative;
+  background-color: #737373;
+}
+
+.taskTitle {
+  width: 100%;
+  background-color: #737373;
+  font-family: 'Lazydog';
+  border: none;
+  border-radius: 10px 10px 0 0;
+  color: #333652;
+}
+
+/* Priority Colors */
+.taskTitle.high, .taskFooter.high {
+  background-color: #c23e3e;
+  color: white;
+}
+.taskTitle.medium, .taskFooter.medium {
+  background-color: #ffbd59;
+}
+.taskTitle.low, .taskFooter.low {
+  background-color: #c1ff72;
+}
+.taskTitle.completed, .taskFooter.completed {
+  background-color: #737373;
+  color: white;
+}
+
+/* Task Footer */
+.taskFooter {
+  background-color: #737373;
+  border-radius: 0 0 10px 10px;
+}
+
+.taskFooter > button {
+  background-color: transparent;
+  border: none;
+}
+
+.taskFooter > button:hover {
+  color: white;
+}
+
+.taskFooter > button:active {
+  color: black;
+}
+
+/* Task Content */
+.taskContent {
+  background-color: white;
+  text-align: left;
+  padding: 5px 10px;
+  max-height: 30px;
+  overflow: hidden;
+  transition: max-height 0.3s;
+}
+
+.taskContent.expanded {
+  max-height: 1000px;
+  transition: max-height 2s;
+}
+
+/* Buttons Inside Tasks */
+.taskBtnsDiv {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 20px;
+}
+
+.taskBtnsDiv > button {
+  font-size: 0.75em;
+  border-radius: 5px;
+}
+
+.taskBtnsDiv > button:hover {
+  opacity: 0.8;
+}
+
+.taskBtnsDiv > button:active {
+  opacity: 1;
+}
+
+.taskBtnsDiv > .deleteTaskBtn {
+  background-color: #d64e3d;
+  border: 1px solid #c23e3e;
+  color: white;
+}
+
+.taskBtnsDiv > .completeTaskBtn {
+  background-color: #439872;
+  border: 1px solid #3c916b;
+  color: white;
+}
+
+.taskBtnsDiv > .editTaskBtn {
+  background-color: #458ab3;
+  border: 1px solid #2e78a3;
+  color: white;
+}
+
+/* Add Task Button */
+.addTaskBtn {
+  background-color: transparent;
+  border: 2px solid #333652;
+  border-radius: 5px;
+  font-family: 'Gagalin';
+  font-weight: bold;
+  color: #333652;
+  position: absolute;
+  top: 2px;
+  right: 0;
+}
+
+.addTaskBtn:hover {
+  border-color: black;
+  color: black;
+}
+
+.addTaskBtn:active {
+  border-color: #333652;
+  color: #333652;
+}
+
+/* Text Field */
+.textField {
+  height: auto;
+  margin: 5px 0;
+  font-size: 1em;
+  font-weight: lighter;
+  white-space: pre-wrap;
+}
