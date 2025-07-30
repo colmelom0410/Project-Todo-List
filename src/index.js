@@ -1,8 +1,15 @@
+// Import CSS styles and project section module
 import "./style.css";
 import ProjectSection from "./projectSection";
 
+// Get main content container from DOM
 const mainContent = document.querySelector('#mainContent');
 
+/* -----------------------------
+   PROJECT & TASK MANAGERS
+------------------------------ */
+
+// Manages all projects and the active project
 class ProjectManager{
     constructor(){
         this.projects = [];
@@ -27,6 +34,7 @@ class ProjectManager{
     }
 }
 
+// Manages all tasks across all projects
 class TaskManager {
     constructor() {
         this.tasks = [];
@@ -69,6 +77,11 @@ class TaskManager {
 const projectManager = new ProjectManager();
 const taskManager = new TaskManager();
 
+/* -----------------------------
+   PROJECT & TASK CLASSES
+------------------------------ */
+
+// Represents a single project
 class Project{
     constructor(projectName, tasks = []){
         this.projectName = projectName
@@ -80,6 +93,7 @@ class Project{
     }
 }
 
+// UI component to render a project card
 class ProjectCard{
     constructor(project){
         this.project = project;
@@ -103,6 +117,7 @@ class ProjectCard{
         return projectContent;
     }
 
+    // Deletes a project both from UI and manager
     deleteProject(projectDom, project){
         const deleteProjectBtn = document.createElement('button');
         deleteProjectBtn.textContent = 'Delete';
@@ -123,6 +138,7 @@ class ProjectCard{
     }
 }
 
+// Represents a single task
 class Task {
     constructor(taskTitle, dueDate, taskDesc, urgency) {
         this.taskTitle = taskTitle;
@@ -132,6 +148,7 @@ class Task {
     }
 }
 
+// UI component to render a task card
 class TaskCard {
     constructor(task, project) {
         this.task = task;
@@ -165,12 +182,14 @@ class TaskCard {
         const taskFooter = document.createElement('div');
         taskFooter.classList.add('taskFooter');
 
+        // Append task buttons
         taskBtnsDiv.appendChild(this.editTask());
         taskBtnsDiv.appendChild(this.completeTask());
         taskBtnsDiv.appendChild(this.deleteTask(task, this.task));
 
         this.updateTaskColor(taskTitle, taskFooter);
 
+        // Expand/collapse toggle button
         const toggleBtn = document.createElement('button');
         toggleBtn.textContent = '+';
 
@@ -188,7 +207,8 @@ class TaskCard {
 
         return task;
     }
-
+    
+     // Delete task handler
     deleteTask(taskDom){
         const deleteTaskBtn = document.createElement('button');
         deleteTaskBtn.textContent = 'Delete';
@@ -201,6 +221,7 @@ class TaskCard {
         return deleteTaskBtn;
     }
 
+    // Mark task complete
     completeTask(){    
         const completeTaskBtn = document.createElement('button');
         completeTaskBtn.textContent = "Mark as Complete";
@@ -216,19 +237,21 @@ class TaskCard {
         return completeTaskBtn;
     }
 
+    // Edit task button with modal handling
     editTask(){
         const editTaskBtn = document.createElement('button');
         editTaskBtn.textContent = "Edit";
         editTaskBtn.classList.add('editTaskBtn');
         
         editTaskBtn.addEventListener('click', () => {
+            // Populate form with existing data
             taskTitle.value = this.task.taskTitle;
             taskDueDate.value = this.task.dueDate;
             taskUrgency.value = this.task.urgency;
             taskDesc.value = this.task.taskDesc;
         
             taskDialog.showModal();
-            // Temporarily override addTodo button behavior
+            // Save changes
             const saveHandler = (e) => {
                 e.preventDefault();
 
@@ -258,6 +281,7 @@ class TaskCard {
         return editTaskBtn;
     }
 
+    // Apply color class based on urgency
     updateTaskColor(taskTitle, taskFooter){
         switch(this.task.urgency){
             case "high":
@@ -279,9 +303,11 @@ class TaskCard {
     }
 }
 
+/* -----------------------------
+   RENDERING LOGIC
+------------------------------ */
 
-console.log(projectManager.getAllProjects())
-
+// Renders a list of tasks to a container
 function renderDisplay(tasks, container, project){
     tasks.forEach(task =>{
         if(task.urgency == "completed") return;
@@ -298,7 +324,7 @@ function renderDisplay(tasks, container, project){
     })
 }
 
-// function that display all projects
+// Display all projects on default view
 function defaultDisplay(){
     mainContent.classList.remove('projectSection');
     removeContent();
@@ -313,7 +339,7 @@ function defaultDisplay(){
 
 const defaultBtn = document.querySelector('#defaultBtn');
 
-
+// Clear main content
 function removeContent(){
     while (mainContent.hasChildNodes()){
         mainContent.removeChild(mainContent.firstChild);
@@ -324,6 +350,7 @@ defaultBtn.addEventListener('click', ()=>{
     defaultDisplay();
 });
 
+// Display a single project with tasks grouped by status
 function displayProject(projectName, tasks){
     removeContent();
     mainContent.classList.remove('defaultSection');
@@ -348,6 +375,10 @@ function displayProject(projectName, tasks){
     return section;
 }
 
+/* -----------------------------
+   UI ELEMENTS & EVENT HANDLERS
+------------------------------ */
+
 const addProjectBtn = document.querySelector('#addProjectBtn');
 const addProjectInput = document.querySelector('#addProjectInput');
 const sideBarBtnContainer = document.querySelector('#sideBar>nav');
@@ -361,6 +392,7 @@ const taskDueDate = document.querySelector('#taskDueDate');
 const taskUrgency = document.querySelector('#urgency');
 const taskDesc = document.querySelector('#taskDesc');
 
+// Validate task input
 function checkInputValidity(){
     if(!taskTitle.value||!taskDueDate.value||!taskDesc.value){
         alert("input values to all fields");
@@ -373,6 +405,7 @@ function checkInputValidity(){
     return true;
 }
 
+// Add task handler
 addTodo.addEventListener('click', (e)=>{
     e.preventDefault();
     const current = projectManager.getCurrentProject();
@@ -387,7 +420,6 @@ addTodo.addEventListener('click', (e)=>{
         );
         taskManager.addTask(NewTask,current);
         displayProject(current.projectName, current.tasks);
-        console.log(projectManager.getAllProjects());
         taskDialog.close();
     }
 
@@ -398,12 +430,14 @@ addTodo.addEventListener('click', (e)=>{
 
 })
 
+// Cancel task creation
 cancelTodo.addEventListener('click',(e)=>{
     e.preventDefault();
     clearTaskForm();
     taskDialog.close();
 })
 
+// Create new project
 function createNewProject(projectName){
     const newProject = new Project(projectName);
     return newProject;
@@ -418,6 +452,7 @@ function createNewProjectBtn(newProject){
 }
 
 
+// Render a project and attach "Add Task" button
 function renderProjectWithAddButton(project) {
     projectManager.setCurrentProject(project);
     const container = displayProject(project.projectName, project.tasks);
@@ -433,6 +468,7 @@ function renderProjectWithAddButton(project) {
 }
 
 
+// Clear task form
 function clearTaskForm() {
     taskTitle.value = '';
     taskDueDate.value = '';
@@ -440,6 +476,7 @@ function clearTaskForm() {
     taskDesc.value = '';
 }
 
+// Add new project button handle
 addProjectBtn.addEventListener('click', (e) =>{
     e.preventDefault();
     const projectName = addProjectInput.value.trim();
@@ -449,10 +486,11 @@ addProjectBtn.addEventListener('click', (e) =>{
     pressProjectBtn(projectName);
 
     addProjectInput.value = '';
-    console.log(projectManager.getAllProjects());
     saveToLocalStorage()
 })
 
+
+// Create new project and sidebar button
 function pressProjectBtn(projectName){
     const newProject = createNewProject(projectName);
     projectManager.addProject(newProject);
@@ -469,6 +507,7 @@ function pressProjectBtn(projectName){
 
 }
 
+// Save state to localStorage
 function saveToLocalStorage(){
     const data = {
         projects: projectManager.getAllProjects().map(project =>({
@@ -484,6 +523,7 @@ function saveToLocalStorage(){
     localStorage.setItem('todoAppData', JSON.stringify(data));
 }
 
+// Load state from localStorage
 function loadFromLocalStorage(){
     const data = JSON.parse(localStorage.getItem('todoAppData'));
     if (!data) return;
@@ -511,7 +551,7 @@ function loadFromLocalStorage(){
 }
 
 
-console.log(projectManager.getAllProjects());
+// Initialize app
 loadFromLocalStorage();
 if (projectManager.getAllProjects().length > 0) {
     defaultDisplay();
